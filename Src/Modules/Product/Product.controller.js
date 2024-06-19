@@ -32,7 +32,6 @@ export const addproduct = catchError(async (req, res, next) => {
     if (req.files.images) {
         req.body.images = req.files.images.map((img) => img.filename);
     }
-    console.log(req.files);
     let product = await productModel.create(req.body)
     res.json({ msg: 'success', product })
 })
@@ -46,7 +45,7 @@ export const getAllProduct = catchError(async (req, res, next) => {
     let product = await apiFeature.mongooseQuery.populate('category')
 
     if (product.length === 0) {
-        res.json({ msg: 'No products found.' });
+        return next(new AppError('No products found.', 404))
     }
     product && res.json({ msg: 'success', page: apiFeature.pageNumber, product })
     !product && res.json({ msg: 'product not found' })

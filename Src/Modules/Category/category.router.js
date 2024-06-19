@@ -14,5 +14,5 @@ categoryRouter.route('/')
 
 categoryRouter.route('/:id')
     .get(validation(paramIdvalidation), getSingleCategory)
-    .put(protectedRoutes, uploadSingleFile('img'), validation(updatevalidation), updateCategory)
-    .delete(protectedRoutes, validation(paramIdvalidation), deleteCategory)
+    .put(protectedRoutes, allowedTo('admin'), uploadSingleFile('img'), validation(updatevalidation), updateCategory)
+    .delete(protectedRoutes, allowedTo('admin'), validation(paramIdvalidation), deleteCategory)

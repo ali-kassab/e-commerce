@@ -20,8 +20,9 @@ export const addOne = (model, modelName) => {
             // check if name exists in database 
             let newModel = await model.findOne({ name: req.body.name });
             if (newModel) { return next(new AppError(`${modelName} already exist`, 404)) }
+            //store the image and create on req.body image
             req.body[imageFiledName] = req.file.filename
-
+            // create all in body with image
             let document = await model.create(req.body)
             res.json({ message: 'success', [modelName]: document })
         } else {
@@ -58,21 +59,41 @@ export const getsingle = (model, modelName) => {
 
 // this function is used to delete document in many models 
 export const deleteOne = (model, modelName) => {
-
     return catchError(async (req, res, next) => {
-        let document = await model.findByIdAndDelete(req.params.id)
-        document && res.json({ message: 'success', [modelName]: document })
-        !document && res.json({ message: `${modelName} not found` })
-    }
-    )
-}
+        // Find the document first to check if it exists
+        let document = await model.findById(req.params.id);
+
+        if (!document) {
+            return res.json({ message: `${modelName} not found` });
+        }
+
+        // Delete the document
+        await model.findByIdAndDelete(req.params.id);
+
+        // Check if the document has an image and delete it from the filesystem
+        if (document.image) {
+            const fullPath = document.image;
+            const fileName = path.basename(fullPath);
+            const folderPath = path.join(process.cwd(),'uploadsFolder');
+            const imagePath = path.join(folderPath,fileName);
+
+            // Delete the image from the filesystem
+            fs.unlink(imagePath, (err) => {
+                if (err) {
+                    console.error("Failed to delete image file:", err);
+                    return next(new AppError('Failed to delete image file', 500));
+                }
+            });
+        }
+
+        // Respond with success
+        res.json({ message: 'success', [modelName]: document });
+    });
+};
 
 // this function is used to update document in many models 
 export const updateOne = (model, modelName) => {
     return catchError(async (req, res, next) => {
-        if (req.body.name) req.body.slug = slugify(req.body.name);
-        if (req.file) req.body.image = req.file.filename;
-
         // Check if the new name exists in the database before updating
         if (req.body.name) {
             const existingDocument = await model.findOne({ name: req.body.name });
@@ -80,6 +101,10 @@ export const updateOne = (model, modelName) => {
                 return next(new AppError(`Name of ${modelName} already exists`, 400));
             }
         }
+        if (req.body.name) req.body.slug = slugify(req.body.name);
+        if (req.file) req.body.image = req.file.filename;
+
+        
         // Check if the document exists in the database and update
         let document = await model.findByIdAndUpdate(req.params.id, req.body, { new: true });
         document && res.json({ message: 'success', [modelName]: document });

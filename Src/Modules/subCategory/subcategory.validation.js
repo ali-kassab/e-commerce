@@ -17,23 +17,23 @@ export const addsubcategoryvali = {
             path: Joi.string().required(),
         })
 
-    })
+    }).options({ allowUnknown: false })
 }
 
 export const paramIdvalidationsub = {
     params: Joi.object({
         id: Joi.string().required().length(24).hex()
-    })
+    }).options({ allowUnknown: false })
 }
 
 export const updatevalidationsub = {
     body: Joi.object({
         name: Joi.string().trim().min(2),
         category: Joi.string().length(24).hex()
-    }),
+    }).options({ allowUnknown: false }),
     params: Joi.object({
         id: Joi.string().required().length(24).hex(),
 
-    })
+    }).options({ allowUnknown: false })
 }
 

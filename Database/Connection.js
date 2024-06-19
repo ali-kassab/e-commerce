@@ -1,4 +1,3 @@
-
 import mongoose from 'mongoose';
 export const DBconnection = () => {
     mongoose.connect(process.env.HOST).then(() => {

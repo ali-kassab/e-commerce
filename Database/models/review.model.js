@@ -4,7 +4,6 @@ const schema = mongoose.Schema({
 
     text: {
         type: String,
-        required: [true, 'text is required'],
         trim: true,
         minLength: [2, 'too short review text'],
     },
@@ -22,8 +21,6 @@ const schema = mongoose.Schema({
         min: 0,
         default: 0
     },
-
-
 }, { timestamps: true })
 
 

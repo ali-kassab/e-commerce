@@ -3,30 +3,32 @@ import mongoose from "mongoose";
 const schema = mongoose.Schema({
     user: {
         type: mongoose.Types.ObjectId,
-        ref: 'user',
+        ref: 'User'
     },
     orderItems: [{
         product: { type: mongoose.Types.ObjectId, ref: 'product' },
         price: Number,
         quantity: { type: Number, default: 1 }
-    }]
-    , totalPrice: Number,
+    }],
+    totalPrice: Number,
     paymentMethod: {
         type: String,
+        required: true,
         enum: ['cash', 'credit'],
-        default: 'cash'
-    }, shippingAddress: {
-        street: String,
-        city: String,
-        phone: String
+        default: 'cash',
+    },
+        shippingAdress: {
+        type: mongoose.Types.ObjectId,
+        ref: 'addresses',
     }, isDeleverd: {
         type: Boolean,
         default: 'false'
-    }, isDeleverd: Date
-    , isPaid: {
+    }, isDeleverd: Date,
+    isPaid: {
         type: Boolean,
         default: 'false'
     }, isPaidAt: Date
 }, { timestamps: true })
 
-export const orderModel = new mongoose.model('Order', schema)
+export const orderModel = new mongoose.model('order', schema)
+

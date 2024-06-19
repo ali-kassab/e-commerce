@@ -23,7 +23,7 @@ export const addcategoryvali = {
 export const paramIdvalidation = {
     params: Joi.object({
         id: Joi.string().required().length(24).hex()
-    })
+    }).options({ allowUnknown: false })
 }
 
 export const updatevalidation = {
@@ -41,9 +41,10 @@ export const updatevalidation = {
             filename: Joi.string().required(),
             path: Joi.string().required(),
         })
-    }), params: Joi.object({
+    }).options({ allowUnknown: false }),
+     params: Joi.object({
         id: Joi.string().required().length(24).hex(),
 
-    })
+    }).options({ allowUnknown: false })
 }
 

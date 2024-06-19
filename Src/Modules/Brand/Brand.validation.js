@@ -16,13 +16,13 @@ export const addBrandvali = {
             path: Joi.string().required(),
         }),
         createdBy: Joi.string().required().length(24).hex()
-    }).required()
+    }).required().options({ allowUnknown: false })
 }
 
 export const paramIdvalidation = {
     params: Joi.object({
         id: Joi.string().required().length(24).hex()
-    })
+    }).options({ allowUnknown: false })
 }
 
 export const updatevalidation = {
@@ -41,13 +41,13 @@ export const updatevalidation = {
     }),
     params: Joi.object({
         id: Joi.string().required().length(24).hex(),
-    })
+    }).options({ allowUnknown: false })
 }
 
 export const searchSchemaQL = Joi.object({
     name: Joi.string().trim().min(2),
     token: Joi.string().required(),
-})
+}).options({ allowUnknown: false })
 
 
 

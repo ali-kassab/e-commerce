@@ -42,7 +42,7 @@ const schema = mongoose.Schema({
         street: String,
         phone: String,
         city: String,
-    }]
+    }, { _id: true }],
 }, { timestamps: true })
 
 schema.pre('save', function () {

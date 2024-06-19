@@ -8,9 +8,7 @@ import jwt, { decode } from 'jsonwebtoken';
 // this function used to sign up the user  option(make token)
 export const signup = catchError(async (req, res, next) => {
     const newUser = await userModel.create(req.body)
-    // this step option according to the business
-    const token = jwt.sign({ id: newUser.id, role: newUser.role }, process.env.JWT_KEY_LOGIN);
-    return res.json({ msg: 'success', newUser: { _id: newUser._id, name: newUser.name, email: newUser.email, role: newUser.role }, token });
+    return res.json({ msg: 'success', newUser: { _id: newUser._id, name: newUser.name, email: newUser.email, role: newUser.role } });
 }
 )
 
@@ -22,12 +20,15 @@ export const login = catchError(async (req, res, next) => {
     if (!user) {
         return next(new AppError("Email or password incorrect", 401))
     }
+    if (user.isBlocked == true) return next(new AppError("account is Blocked please connect to admin", 404));
+
     const match = bcrypt.compareSync(req.body.password, user.password);
 
     if (!match) {
+        await userModel.updateOne({ _id: user._id }, { isActive: false });
         return next(new AppError("Email or password incorrect", 401))
     } else {
-        await userModel.updateOne({ isActive: true })
+        await userModel.updateOne({ _id: user._id }, { isActive: true });
         const token = jwt.sign({ id: user.id, role: user.role }, process.env.JWT_KEY_LOGIN);
         res.json({ msg: "success", token });
     }
@@ -84,8 +85,6 @@ export const authorizationGraphQL = async (token, roles) => {
     }
     return user
 }
-
-
 
 
 // this function used in middleware to filter the role 

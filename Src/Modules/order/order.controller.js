@@ -17,7 +17,7 @@ export const createCashOrder = catchError(async (req, res, next) => {
             user: req.user.id,
             orderItems: cartExist.cartItems,
             totalPrice,
-            shippingAddress: req.body.shippingAddress,
+            shippingAddress: req.body.address,
         },
     )
 
@@ -36,14 +36,13 @@ export const createCashOrder = catchError(async (req, res, next) => {
 
 //this is used to get Specific Order and populate on the data that will be usefull to frontend
 export const getSpecificOrder = catchError(async (req, res, next) => {
-
-    const orderExist = await orderModel.findOne({ user: req.user.id })
+    const order = await orderModel.findOne({ user: req.user.id })
         .populate({ path: 'user', select: 'name email _id' })
         .populate({
             path: 'orderItems.product'
         });
-    if (!orderExist) return next(new AppError('order not Exist', 404))
-    res.json({ msg: 'success', orderExist })
+    if (!order) return next(new AppError('order not Exist', 404))
+    res.json({ msg: 'success', order })
 })
 
 //this is used to get all Orders and populate on the data that will be usefull to frontend

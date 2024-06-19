@@ -15,11 +15,12 @@ export class ApiFeature {
     }
     filter() {
         let filterObject = { ...this.searchQuery }
-        let excludedFildes = ['page', 'sort', 'fildes', 'keyword']
+        let excludedFildes = ['page', 'sort', 'fields', 'keyword']
         excludedFildes.forEach((e) => delete filterObject[e])
         filterObject = JSON.stringify(filterObject)
         filterObject = filterObject.replace(/(gt|gte|lt|lte|eq)/g, match => '$' + match)
         filterObject = JSON.parse(filterObject)
+        this.mongooseQuery = this.mongooseQuery.find(filterObject);
 
         return this
     }

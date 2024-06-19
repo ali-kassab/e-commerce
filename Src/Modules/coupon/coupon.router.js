@@ -9,10 +9,10 @@ import { addcouponVali, paramIdvaliCoupon, updatevalidationCoupon } from '../cou
 export const couponRouter = express.Router({ mergeParams: true })
 
 couponRouter.route('/')
-    .post(protectedRoutes, allowedTo('user'), validation(addcouponVali), addCoupon)
-    .get(protectedRoutes, allowedTo('user'), getallCoupons)
+    .post(protectedRoutes, allowedTo('admin'), validation(addcouponVali), addCoupon)
+    .get(protectedRoutes, allowedTo('admin'), getallCoupons)
 
 couponRouter.route('/:id')
-    .get(protectedRoutes, allowedTo('user'), validation(paramIdvaliCoupon), getsingleCoupon)
-    .put(protectedRoutes, allowedTo('user'), validation(updatevalidationCoupon), updateCoupons)
-    .delete(protectedRoutes, allowedTo('user'), validation(paramIdvaliCoupon), DeleteCoupon)
+    .get(protectedRoutes, allowedTo('admin'), validation(paramIdvaliCoupon), getsingleCoupon)
+    .put(protectedRoutes, allowedTo('admin'), validation(updatevalidationCoupon), updateCoupons)
+    .delete(protectedRoutes, allowedTo('admin'), validation(paramIdvaliCoupon), DeleteCoupon)
